@@ -65,7 +65,7 @@ const AddProjectMember = ({ isDialogOpen, setIsDialogOpen }) => {
                         <button type="button" onClick={() => setIsDialogOpen(false)} className="px-5 py-2 text-sm rounded border border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-zinc-200 hover:bg-zinc-200 dark:hover:bg-zinc-800 transition" >
                             Cancel
                         </button>
-                        <button type="submit" disabled={isAdding || !currentWorkspace} className="px-5 py-2 text-sm rounded bg-gradient-to-br from-blue-500 to-blue-600 hover:opacity-90 text-white disabled:opacity-50 transition" >
+                        <button type="submit" disabled={isAdding || !currentWorkspace} className="app-primary px-5 py-2 text-sm rounded-lg disabled:opacity-50 transition" >
                             {isAdding ? "Adding..." : "Add Member"}
                         </button>
                     </div>

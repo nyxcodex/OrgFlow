@@ -1,9 +1,9 @@
 import { useMemo } from "react";
-import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, PieChart, Pie, Cell, Tooltip } from "recharts";
 import { CheckCircle, Clock, AlertTriangle, Users, ArrowRightIcon } from "lucide-react";
 
 // Colors for charts and priorities
-const COLORS = ["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6"];
+const COLORS = ["#6d28d9", "#059669", "#f59e0b", "#e11d48", "#0f766e"];
 const PRIORITY_COLORS = {
     LOW: "text-red-600 bg-red-200 dark:text-red-500 dark:bg-red-600",
     MEDIUM: "text-blue-600 bg-blue-200 dark:text-blue-500 dark:bg-blue-600",
@@ -63,9 +63,9 @@ const ProjectAnalytics = ({ project, tasks }) => {
         {
             label: "Active Tasks",
             value: stats.inProgress,
-            color: "text-blue-600 dark:text-blue-400",
-            icon: <Clock className="size-5 text-blue-600 dark:text-blue-400" />,
-            bg: "bg-blue-200 dark:bg-blue-500/10",
+            color: "text-violet-700 dark:text-violet-300",
+            icon: <Clock className="size-5 text-violet-700 dark:text-violet-300" />,
+            bg: "bg-violet-100 dark:bg-violet-500/10",
         },
         {
             label: "Overdue Tasks",
@@ -84,18 +84,18 @@ const ProjectAnalytics = ({ project, tasks }) => {
     ];
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-5">
             {/* Metrics */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
                 {metrics.map((m, i) => (
                     <div
                         key={i}
-                        className="not-dark:bg-white dark:bg-gradient-to-br dark:from-zinc-800/70 dark:to-zinc-900/50 border border-zinc-300 dark:border-zinc-800 rounded-lg p-6"
+                        className="app-panel rounded-xl p-4 sm:p-5"
                     >
                         <div className="flex items-center justify-between">
                             <div>
                                 <p className="text-zinc-600 dark:text-zinc-400 text-sm">{m.label}</p>
-                                <p className={`text-xl font-bold ${m.color}`}>{m.value}</p>
+                                <p className={`text-2xl font-extrabold tracking-tight ${m.color}`}>{m.value}</p>
                             </div>
                             <div className={`p-2 rounded-md ${m.bg}`}>{m.icon}</div>
                         </div>
@@ -104,28 +104,38 @@ const ProjectAnalytics = ({ project, tasks }) => {
             </div>
 
             {/* Charts */}
-            <div className="grid lg:grid-cols-2 gap-6">
+            <div className="grid xl:grid-cols-[1.2fr_0.8fr] gap-5">
                 {/* Tasks by Status */}
-                <div className="not-dark:bg-white dark:bg-gradient-to-br dark:from-zinc-800/70 dark:to-zinc-900/50 border border-zinc-300 dark:border-zinc-800 rounded-lg p-6">
-                    <h2 className="text-zinc-900 dark:text-white mb-4 font-medium">Tasks by Status</h2>
-                    <ResponsiveContainer width="100%" height={300}>
-                        <BarChart data={statusData}>
+                <div className="app-panel rounded-xl p-6">
+                    <div className="flex items-start justify-between mb-5">
+                        <div>
+                            <p className="text-xs uppercase tracking-[0.16em] text-zinc-500 dark:text-zinc-400">Workflow</p>
+                            <h2 className="text-zinc-900 dark:text-white font-semibold">Tasks by status</h2>
+                        </div>
+                        <span className="rounded-full bg-violet-100 px-2.5 py-1 text-xs font-semibold text-violet-700 dark:bg-violet-500/15 dark:text-violet-200">{stats.total} total</span>
+                    </div>
+                    <ResponsiveContainer width="100%" height={270}>
+                        <BarChart data={statusData} layout="vertical" margin={{ left: 12, right: 18 }}>
                             <XAxis
+                                type="number"
                                 dataKey="name"
                                 tick={{ fill: "#52525b", fontSize: 12 }}
-                                axisLine={{ stroke: "#d4d4d8" }}
-                                dark={{ stroke: "#27272a" }}
+                                axisLine={false}
+                                tickLine={false}
                             />
-                            <YAxis tick={{ fill: "#52525b", fontSize: 12 }} axisLine={{ stroke: "#d4d4d8" }} />
-                            <Bar dataKey="value" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+                            <YAxis dataKey="name" type="category" width={86} tick={{ fill: "#71717a", fontSize: 12 }} axisLine={false} tickLine={false} />
+                            <Tooltip cursor={{ fill: "rgba(109, 40, 217, 0.06)" }} contentStyle={{ borderRadius: 10, border: "1px solid #e7e4ed" }} />
+                            <Bar dataKey="value" fill="#6d28d9" radius={[0, 6, 6, 0]} barSize={22} />
                         </BarChart>
                     </ResponsiveContainer>
                 </div>
 
                 {/* Tasks by Type */}
-                <div className="not-dark:bg-white dark:bg-gradient-to-br dark:from-zinc-800/70 dark:to-zinc-900/50 border border-zinc-300 dark:border-zinc-800 rounded-lg p-6">
-                    <h2 className="text-zinc-900 dark:text-white mb-4 font-medium">Tasks by Type</h2>
-                    <ResponsiveContainer width="100%" height={300}>
+                <div className="app-panel rounded-xl p-6">
+                    <p className="text-xs uppercase tracking-[0.16em] text-zinc-500 dark:text-zinc-400">Distribution</p>
+                    <h2 className="text-zinc-900 dark:text-white mb-2 font-semibold">Work by type</h2>
+                    <div className="flex flex-col sm:flex-row xl:flex-col 2xl:flex-row items-center gap-3">
+                    <ResponsiveContainer width="100%" height={200}>
                         <PieChart>
                             <Pie
                                 data={typeData}
@@ -133,8 +143,10 @@ const ProjectAnalytics = ({ project, tasks }) => {
                                 nameKey="name"
                                 cx="50%"
                                 cy="50%"
-                                outerRadius={100}
-                                label={({ name, value }) => `${name}: ${value}`}
+                                innerRadius={52}
+                                outerRadius={76}
+                                paddingAngle={4}
+                                stroke="none"
                             >
                                 {typeData.map((_, i) => (
                                     <Cell key={i} fill={COLORS[i % COLORS.length]} />
@@ -142,12 +154,16 @@ const ProjectAnalytics = ({ project, tasks }) => {
                             </Pie>
                         </PieChart>
                     </ResponsiveContainer>
+                    <div className="w-full space-y-2">
+                        {typeData.map((item, i) => <div key={item.name} className="flex items-center justify-between text-xs"><span className="flex items-center gap-2 text-zinc-600 dark:text-zinc-300"><i className="size-2 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] }} />{item.name}</span><strong className="text-zinc-900 dark:text-white">{item.value}</strong></div>)}
+                    </div>
+                    </div>
                 </div>
             </div>
 
             {/* Priority Breakdown */}
-            <div className="not-dark:bg-white dark:bg-gradient-to-br dark:from-zinc-800/70 dark:to-zinc-900/50 border border-zinc-300 dark:border-zinc-800 rounded-lg p-6">
-                <h2 className="text-zinc-900 dark:text-white mb-4 font-medium">Tasks by Priority</h2>
+            <div className="app-panel rounded-xl p-6">
+                <div className="flex items-center justify-between mb-5"><div><p className="text-xs uppercase tracking-[0.16em] text-zinc-500 dark:text-zinc-400">Focus</p><h2 className="text-zinc-900 dark:text-white font-semibold">Priority split</h2></div><span className="text-sm text-zinc-500 dark:text-zinc-400">Open work at a glance</span></div>
                 <div className="space-y-4">
                     {priorityData.map((p) => (
                         <div key={p.name} className="space-y-2">

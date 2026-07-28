@@ -7,17 +7,23 @@ import { deleteTask, updateTask } from "../features/workspaceSlice";
 import { Bug, CalendarIcon, GitCommit, MessageSquare, Square, Trash, XIcon, Zap } from "lucide-react";
 
 const typeIcons = {
-    BUG: { icon: Bug, color: "text-red-600 dark:text-red-400" },
-    FEATURE: { icon: Zap, color: "text-blue-600 dark:text-blue-400" },
-    TASK: { icon: Square, color: "text-green-600 dark:text-green-400" },
-    IMPROVEMENT: { icon: GitCommit, color: "text-purple-600 dark:text-purple-400" },
-    OTHER: { icon: MessageSquare, color: "text-amber-600 dark:text-amber-400" },
+    BUG: { icon: Bug, color: "text-rose-600 dark:text-rose-300" },
+    FEATURE: { icon: Zap, color: "text-sky-600 dark:text-sky-300" },
+    TASK: { icon: Square, color: "text-teal-600 dark:text-teal-300" },
+    IMPROVEMENT: { icon: GitCommit, color: "text-violet-600 dark:text-violet-300" },
+    OTHER: { icon: MessageSquare, color: "text-amber-600 dark:text-amber-300" },
 };
 
 const priorityTexts = {
-    LOW: { background: "bg-red-100 dark:bg-red-950", prioritycolor: "text-red-600 dark:text-red-400" },
-    MEDIUM: { background: "bg-blue-100 dark:bg-blue-950", prioritycolor: "text-blue-600 dark:text-blue-400" },
-    HIGH: { background: "bg-emerald-100 dark:bg-emerald-950", prioritycolor: "text-emerald-600 dark:text-emerald-400" },
+    LOW: { background: "border-zinc-300 dark:border-zinc-600", prioritycolor: "text-zinc-600 dark:text-zinc-300" },
+    MEDIUM: { background: "border-sky-300 dark:border-sky-800", prioritycolor: "text-sky-700 dark:text-sky-300" },
+    HIGH: { background: "border-rose-300 dark:border-rose-800", prioritycolor: "text-rose-700 dark:text-rose-300" },
+};
+
+const statusStyles = {
+    TODO: "border-l-zinc-400 bg-zinc-50 text-zinc-700 dark:border-l-zinc-500 dark:bg-zinc-800/70 dark:text-zinc-300",
+    IN_PROGRESS: "border-l-amber-500 bg-amber-50 text-amber-800 dark:border-l-amber-400 dark:bg-amber-500/10 dark:text-amber-200",
+    DONE: "border-l-teal-500 bg-teal-50 text-teal-800 dark:border-l-teal-400 dark:bg-teal-500/10 dark:text-teal-200",
 };
 
 const ProjectTasks = ({ tasks }) => {
@@ -135,13 +141,13 @@ const ProjectTasks = ({ tasks }) => {
 
                 {/* Reset filters */}
                 {(filters.status || filters.type || filters.priority || filters.assignee) && (
-                    <button type="button" onClick={() => setFilters({ status: "", type: "", priority: "", assignee: "" })} className="px-3 py-1 flex items-center gap-2 rounded bg-gradient-to-br from-purple-400 to-purple-500 text-zinc-100 dark:text-zinc-200 text-sm transition-colors" >
+                    <button type="button" onClick={() => setFilters({ status: "", type: "", priority: "", assignee: "" })} className="px-3 py-1 flex items-center gap-2 rounded-lg bg-violet-100 text-violet-800 dark:bg-violet-500/15 dark:text-violet-200 text-sm transition-colors" >
                         <XIcon className="size-3" /> Reset
                     </button>
                 )}
 
                 {selectedTasks.length > 0 && (
-                    <button type="button" onClick={handleDelete} className="px-3 py-1 flex items-center gap-2 rounded bg-gradient-to-br from-indigo-400 to-indigo-500 text-zinc-100 dark:text-zinc-200 text-sm transition-colors" >
+                    <button type="button" onClick={handleDelete} className="px-3 py-1 flex items-center gap-2 rounded-lg bg-violet-700 text-white dark:bg-violet-600 text-sm transition-colors" >
                         <Trash className="size-3" /> Delete
                     </button>
                 )}
@@ -185,12 +191,12 @@ const ProjectTasks = ({ tasks }) => {
                                                     </div>
                                                 </td>
                                                 <td className="px-4 py-2">
-                                                    <span className={`text-xs px-2 py-1 rounded ${background} ${prioritycolor}`}>
+                                                    <span className={`app-tag ${background} ${prioritycolor}`}>
                                                         {task.priority}
                                                     </span>
                                                 </td>
                                                 <td onClick={e => e.stopPropagation()} className="px-4 py-2">
-                                                    <select name="status" onChange={(e) => handleStatusChange(task.id, e.target.value)} value={task.status} className="group-hover:ring ring-zinc-100 outline-none px-2 pr-4 py-1 rounded text-sm text-zinc-900 dark:text-zinc-200 cursor-pointer" >
+                                                    <select name="status" onChange={(e) => handleStatusChange(task.id, e.target.value)} value={task.status} className={`group-hover:ring ring-zinc-100 outline-none border-l-[3px] px-2 pr-4 py-1 rounded-r-md text-xs font-semibold cursor-pointer ${statusStyles[task.status] || statusStyles.TODO}`} >
                                                         <option value="TODO">To Do</option>
                                                         <option value="IN_PROGRESS">In Progress</option>
                                                         <option value="DONE">Done</option>
@@ -230,7 +236,7 @@ const ProjectTasks = ({ tasks }) => {
                                 const { background, prioritycolor } = priorityTexts[task.priority] || {};
 
                                 return (
-                                    <div key={task.id} className=" dark:bg-gradient-to-br dark:from-zinc-800/70 dark:to-zinc-900/50 border border-zinc-300 dark:border-zinc-800 rounded-lg p-4 flex flex-col gap-2">
+                                    <div key={task.id} className="app-panel rounded-xl p-4 flex flex-col gap-2">
                                         <div className="flex items-center justify-between">
                                             <h3 className="text-zinc-900 dark:text-zinc-200 text-sm font-semibold">{task.title}</h3>
                                             <input type="checkbox" className="size-4 accent-zinc-600 dark:accent-zinc-500" onChange={() => selectedTasks.includes(task.id) ? setSelectedTasks(selectedTasks.filter((i) => i !== task.id)) : setSelectedTasks((prev) => [...prev, task.id])} checked={selectedTasks.includes(task.id)} />
@@ -242,14 +248,14 @@ const ProjectTasks = ({ tasks }) => {
                                         </div>
 
                                         <div>
-                                            <span className={`text-xs px-2 py-1 rounded ${background} ${prioritycolor}`}>
+                                            <span className={`app-tag ${background} ${prioritycolor}`}>
                                                 {task.priority}
                                             </span>
                                         </div>
 
                                         <div>
                                             <label className="text-zinc-600 dark:text-zinc-400 text-xs">Status</label>
-                                            <select name="status" onChange={(e) => handleStatusChange(task.id, e.target.value)} value={task.status} className="w-full mt-1 bg-zinc-100 dark:bg-zinc-800 ring-1 ring-zinc-300 dark:ring-zinc-700 outline-none px-2 py-1 rounded text-sm text-zinc-900 dark:text-zinc-200" >
+                                            <select name="status" onChange={(e) => handleStatusChange(task.id, e.target.value)} value={task.status} className={`w-full mt-1 border-l-[3px] outline-none px-2 py-2 rounded-r-md text-sm font-semibold ${statusStyles[task.status] || statusStyles.TODO}`} >
                                                 <option value="TODO">To Do</option>
                                                 <option value="IN_PROGRESS">In Progress</option>
                                                 <option value="DONE">Done</option>

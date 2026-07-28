@@ -29,7 +29,7 @@ export default function ProjectSettings({ project }) {
 
     const inputClasses = "w-full px-3 py-2 rounded mt-2 border text-sm dark:bg-zinc-900 border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-zinc-300";
 
-    const cardClasses = "rounded-lg border p-6 not-dark:bg-white dark:bg-gradient-to-br dark:from-zinc-800/70 dark:to-zinc-900/50 border-zinc-300 dark:border-zinc-800";
+    const cardClasses = "app-panel rounded-xl p-6";
 
     const labelClasses = "text-sm text-zinc-600 dark:text-zinc-400";
 
@@ -93,7 +93,7 @@ export default function ProjectSettings({ project }) {
                     </div>
 
                     {/* Save Button */}
-                    <button type="submit" disabled={isSubmitting} className="ml-auto flex items-center text-sm justify-center gap-2 bg-gradient-to-br from-blue-500 to-blue-600 text-white px-4 py-2 rounded" >
+                    <button type="submit" disabled={isSubmitting} className="app-primary ml-auto flex items-center text-sm justify-center gap-2 px-4 py-2 rounded-lg disabled:opacity-50" >
                         <Save className="size-4" /> {isSubmitting ? "Saving..." : "Save Changes"}
                     </button>
                 </form>

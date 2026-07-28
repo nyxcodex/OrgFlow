@@ -77,9 +77,9 @@ const TaskDetails = () => {
     if (!task) return <div className="text-red-500 px-4 py-6">Task not found.</div>;
 
     return (
-        <div className="flex flex-col-reverse lg:flex-row gap-6 sm:p-4 text-gray-900 dark:text-zinc-100 max-w-6xl mx-auto">
+        <div className="grid lg:grid-cols-[320px_minmax(0,1fr)] gap-6 text-gray-900 dark:text-zinc-100 max-w-7xl mx-auto">
             {/* Left: Comments / Chatbox */}
-            <div className="w-full lg:w-2/3">
+            <div className="w-full lg:order-2">
                 <div className="p-5 rounded-md  border border-gray-300 dark:border-zinc-800  flex flex-col lg:h-[80vh]">
                     <h2 className="text-base font-semibold flex items-center gap-2 mb-4 text-gray-900 dark:text-white">
                         <MessageCircle className="size-5" /> Task Discussion ({comments.length})
@@ -89,7 +89,7 @@ const TaskDetails = () => {
                         {comments.length > 0 ? (
                             <div className="flex flex-col gap-4 mb-6 mr-2">
                                 {comments.map((comment) => (
-                                    <div key={comment.id} className={`sm:max-w-4/5 dark:bg-gradient-to-br dark:from-zinc-800 dark:to-zinc-900 border border-gray-300 dark:border-zinc-700 p-3 rounded-md ${comment.user.id === user?.id ? "ml-auto" : "mr-auto"}`} >
+                                    <div key={comment.id} className={`sm:max-w-4/5 border border-gray-300 bg-white dark:border-zinc-700 dark:bg-[#201e28] p-3 rounded-lg ${comment.user.id === user?.id ? "ml-auto" : "mr-auto"}`} >
                                         <div className="flex items-center gap-2 mb-1 text-sm text-gray-500 dark:text-zinc-400">
                                             <img src={comment.user.image} alt="avatar" className="size-5 rounded-full" />
                                             <span className="font-medium text-gray-900 dark:text-white">{comment.user.name}</span>
@@ -115,7 +115,7 @@ const TaskDetails = () => {
                             className="w-full dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700 rounded-md p-2 text-sm text-gray-900 dark:text-zinc-200 resize-none focus:outline-none focus:ring-1 focus:ring-blue-600"
                             rows={3}
                         />
-                        <button onClick={handleAddComment} className="bg-gradient-to-l from-blue-500 to-blue-600 transition-colors text-white text-sm px-5 py-2 rounded " >
+                        <button onClick={handleAddComment} className="app-primary transition-colors text-sm px-5 py-2 rounded-lg" >
                             Post
                         </button>
                     </div>
@@ -123,19 +123,19 @@ const TaskDetails = () => {
             </div>
 
             {/* Right: Task + Project Info */}
-            <div className="w-full lg:w-1/2 flex flex-col gap-6">
+            <aside className="w-full lg:order-1 flex flex-col gap-6 lg:sticky lg:top-0 lg:self-start">
                 {/* Task Info */}
                 <div className="p-5 rounded-md bg-white dark:bg-zinc-900 border border-gray-300 dark:border-zinc-800 ">
                     <div className="mb-3">
                         <h1 className="text-lg font-medium text-gray-900 dark:text-zinc-100">{task.title}</h1>
-                        <div className="flex flex-wrap gap-2 mt-2">
-                            <span className="px-2 py-0.5 rounded bg-zinc-200 dark:bg-zinc-700 text-zinc-900 dark:text-zinc-300 text-xs">
+                        <div className="flex flex-wrap gap-2 mt-3">
+                            <span className={`app-tag ${task.status === "DONE" ? "border-teal-300 text-teal-700 dark:border-teal-700 dark:text-teal-300" : task.status === "IN_PROGRESS" ? "border-amber-300 text-amber-700 dark:border-amber-700 dark:text-amber-300" : "border-zinc-300 text-zinc-600 dark:border-zinc-600 dark:text-zinc-300"}`}>
                                 {task.status}
                             </span>
-                            <span className="px-2 py-0.5 rounded bg-blue-200 dark:bg-blue-900 text-blue-900 dark:text-blue-300 text-xs">
+                            <span className="app-tag border-sky-300 text-sky-700 dark:border-sky-700 dark:text-sky-300">
                                 {task.type}
                             </span>
-                            <span className="px-2 py-0.5 rounded bg-green-200 dark:bg-emerald-900 text-green-900 dark:text-emerald-300 text-xs">
+                            <span className="app-tag border-rose-300 text-rose-700 dark:border-rose-700 dark:text-rose-300">
                                 {task.priority}
                             </span>
                         </div>
@@ -172,7 +172,7 @@ const TaskDetails = () => {
                         </div>
                     </div>
                 )}
-            </div>
+            </aside>
         </div>
     );
 };

@@ -1,20 +1,20 @@
 import { Link } from "react-router-dom";
 
 const statusColors = {
-    PLANNING: "bg-gray-200 dark:bg-zinc-600 text-gray-900 dark:text-zinc-200",
-    ACTIVE: "bg-emerald-200 dark:bg-emerald-500 text-emerald-900 dark:text-emerald-900",
-    ON_HOLD: "bg-amber-200 dark:bg-amber-500 text-amber-900 dark:text-amber-900",
-    COMPLETED: "bg-blue-200 dark:bg-blue-500 text-blue-900 dark:text-blue-900",
-    CANCELLED: "bg-red-200 dark:bg-red-500 text-red-900 dark:text-red-900",
+    PLANNING: "border-zinc-300 text-zinc-600 dark:border-zinc-600 dark:text-zinc-300",
+    ACTIVE: "border-teal-300 text-teal-700 dark:border-teal-700 dark:text-teal-300",
+    ON_HOLD: "border-amber-300 text-amber-700 dark:border-amber-700 dark:text-amber-300",
+    COMPLETED: "border-sky-300 text-sky-700 dark:border-sky-700 dark:text-sky-300",
+    CANCELLED: "border-rose-300 text-rose-700 dark:border-rose-700 dark:text-rose-300",
 };
 
 const ProjectCard = ({ project }) => {
     return (
-        <Link to={`/projectsDetail?id=${project.id}&tab=tasks`} className="bg-white dark:bg-zinc-950 dark:bg-gradient-to-br dark:from-zinc-800/70 dark:to-zinc-900/50 border border-gray-200 dark:border-zinc-800 hover:border-gray-300 dark:hover:border-zinc-700 rounded-lg p-5 transition-all duration-200 group">
+        <Link to={`/projectsDetail?id=${project.id}&tab=tasks`} className="app-panel hover:border-violet-200 dark:hover:border-violet-500/30 rounded-xl p-5 transition-all duration-200 group">
             {/* Header */}
             <div className="flex items-start justify-between mb-3">
                 <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-gray-900 dark:text-zinc-200 mb-1 truncate group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors">
+                    <h3 className="font-semibold text-gray-900 dark:text-zinc-200 mb-1 truncate group-hover:text-violet-700 dark:group-hover:text-violet-300 transition-colors">
                         {project.name}
                     </h3>
                     <p className="text-gray-500 dark:text-zinc-400 text-sm line-clamp-2 mb-3">
@@ -24,10 +24,10 @@ const ProjectCard = ({ project }) => {
             </div>
 
             <div className="flex items-center justify-between mb-4">
-                <span className={`px-2 py-0.5 rounded text-xs ${statusColors[project.status]}`} >
+                <span className={`app-tag ${statusColors[project.status]}`} >
                     {project.status.replace("_", " ")}
                 </span>
-                <span className="text-xs text-gray-500 dark:text-zinc-500 capitalize">
+                <span className="app-tag border-zinc-200 text-zinc-500 dark:border-zinc-700 dark:text-zinc-400">
                     {project.priority} priority
                 </span>
             </div>
@@ -39,7 +39,7 @@ const ProjectCard = ({ project }) => {
                     <span className="text-gray-400 dark:text-zinc-400">{project.progress || 0}%</span>
                 </div>
                 <div className="w-full bg-gray-200 dark:bg-zinc-800 h-1.5 rounded">
-                    <div className="h-1.5 rounded bg-blue-500" style={{ width: `${project.progress || 0}%` }} />
+                    <div className="h-1.5 rounded bg-violet-600" style={{ width: `${project.progress || 0}%` }} />
                 </div>
             </div>
 

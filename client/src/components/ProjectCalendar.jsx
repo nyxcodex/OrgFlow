@@ -3,11 +3,11 @@ import { format, isSameDay, isBefore, startOfMonth, endOfMonth, eachDayOfInterva
 import { CalendarIcon, Clock, User, ChevronLeft, ChevronRight } from "lucide-react";
 
 const typeColors = {
-    BUG: "bg-red-200 text-red-800 dark:bg-red-500 dark:text-red-900",
-    FEATURE: "bg-blue-200 text-blue-800 dark:bg-blue-500 dark:text-blue-900",
-    TASK: "bg-green-200 text-green-800 dark:bg-green-500 dark:text-green-900",
-    IMPROVEMENT: "bg-purple-200 text-purple-800 dark:bg-purple-500 dark:text-purple-900",
-    OTHER: "bg-amber-200 text-amber-800 dark:bg-amber-500 dark:text-amber-900",
+    BUG: "border-rose-300 text-rose-700 dark:border-rose-800 dark:text-rose-300",
+    FEATURE: "border-sky-300 text-sky-700 dark:border-sky-800 dark:text-sky-300",
+    TASK: "border-teal-300 text-teal-700 dark:border-teal-800 dark:text-teal-300",
+    IMPROVEMENT: "border-violet-300 text-violet-700 dark:border-violet-800 dark:text-violet-300",
+    OTHER: "border-amber-300 text-amber-700 dark:border-amber-800 dark:text-amber-300",
 };
 
 const priorityBorders = {
@@ -44,7 +44,7 @@ const ProjectCalendar = ({ tasks }) => {
         <div className="grid lg:grid-cols-3 gap-6">
             {/* Calendar View */}
             <div className="lg:col-span-2 ">
-                <div className="not-dark:bg-white dark:bg-gradient-to-br dark:from-zinc-800/70 dark:to-zinc-900/50 border border-zinc-300 dark:border-zinc-800 rounded-lg p-4">
+                <div className="app-panel rounded-xl p-4">
                     <div className="flex items-center justify-between mb-4">
                         <h2 className="text-zinc-900 dark:text-white text-md flex gap-2 items-center max-sm:hidden">
                             <CalendarIcon className="size-5" /> Task Calendar
@@ -92,7 +92,7 @@ const ProjectCalendar = ({ tasks }) => {
 
                 {/* Tasks for Selected Day */}
                 {getTasksForDate(selectedDate).length > 0 && (
-                    <div className=" not-dark:bg-white mt-6 dark:bg-gradient-to-br dark:from-zinc-800/70 dark:to-zinc-900/50 border border-zinc-300 dark:border-zinc-800 rounded-lg p-4">
+                    <div className="app-panel mt-6 rounded-xl p-4">
                         <h3 className="text-zinc-900 dark:text-white text-lg mb-3">
                             Tasks for {format(selectedDate, "MMM d, yyyy")}
                         </h3>
@@ -104,7 +104,7 @@ const ProjectCalendar = ({ tasks }) => {
                                 >
                                     <div className="flex justify-between mb-2">
                                         <h4 className="text-zinc-900 dark:text-white font-medium">{task.title}</h4>
-                                        <span className={`px-2 py-0.5 rounded text-xs ${typeColors[task.type]}`}>
+                                        <span className={`app-tag ${typeColors[task.type]}`}>
                                             {task.type}
                                         </span>
                                     </div>
@@ -127,7 +127,7 @@ const ProjectCalendar = ({ tasks }) => {
             {/* Sidebar */}
             <div className="space-y-6">
                 {/* Upcoming Tasks */}
-                <div className="bg-white dark:bg-zinc-950 dark:bg-gradient-to-br dark:from-zinc-800/70 dark:to-zinc-900/50 border border-zinc-300 dark:border-zinc-800 rounded-lg p-4">
+                <div className="app-panel rounded-xl p-4">
                     <h3 className="text-zinc-900 dark:text-white text-sm flex items-center gap-2 mb-3">
                         <Clock className="w-4 h-4" /> Upcoming Tasks
                     </h3>
@@ -142,7 +142,7 @@ const ProjectCalendar = ({ tasks }) => {
                                 >
                                     <div className="flex justify-between items-start text-sm">
                                         <span className="text-zinc-900 dark:text-white">{task.title}</span>
-                                        <span className={`text-xs px-2 py-0.5 rounded ${typeColors[task.type]}`}>
+                                        <span className={`app-tag ${typeColors[task.type]}`}>
                                             {task.type}
                                         </span>
                                     </div>

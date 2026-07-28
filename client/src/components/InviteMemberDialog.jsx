@@ -60,7 +60,7 @@ const InviteMemberDialog = ({ isDialogOpen, setIsDialogOpen }) => {
                         <button type="button" onClick={() => setIsDialogOpen(false)} className="px-5 py-2 rounded text-sm border border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition" >
                             Cancel
                         </button>
-                        <button type="submit" disabled={isSubmitting || !currentWorkspace} className="px-5 py-2 rounded text-sm bg-gradient-to-br from-blue-500 to-blue-600 text-white disabled:opacity-50 hover:opacity-90 transition" >
+                        <button type="submit" disabled={isSubmitting || !currentWorkspace} className="app-primary px-5 py-2 rounded-lg text-sm disabled:opacity-50 transition" >
                             {isSubmitting ? "Sending..." : "Send Invitation"}
                         </button>
                     </div>

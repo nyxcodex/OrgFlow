@@ -44,10 +44,10 @@ export default function TasksSummary() {
     ];
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-4">
             {summaryCards.map((card) => (
-                <div key={card.title} className="bg-white dark:bg-zinc-950 dark:bg-gradient-to-br dark:from-zinc-800/70 dark:to-zinc-900/50 border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 transition-all duration-200 rounded-lg overflow-hidden">
-                    <div className="border-b border-zinc-200 dark:border-zinc-800 p-4 pb-3">
+                <div key={card.title} className="app-panel hover:border-violet-200 dark:hover:border-violet-500/30 transition-all duration-200 rounded-xl overflow-hidden">
+                    <div className="border-b border-zinc-200 dark:border-zinc-800 p-3.5">
                         <div className="flex items-center gap-3">
                             <div className="p-2 bg-zinc-50 dark:bg-zinc-800 rounded-lg">
                                 <card.icon className="w-4 h-4 text-gray-500 dark:text-zinc-400" />
@@ -60,7 +60,7 @@ export default function TasksSummary() {
                             </div>
                         </div>
                     </div>
-                    <div className="p-4">
+                    <div className="p-3.5">
                         {card.items.length === 0 ? (
                             <p className="text-sm text-gray-500 dark:text-zinc-400 text-center py-4">
                                 No {card.title.toLowerCase()}

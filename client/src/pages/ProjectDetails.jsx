@@ -35,11 +35,11 @@ export default function ProjectDetail() {
     }, [id, projects]);
 
     const statusColors = {
-        PLANNING: "bg-zinc-200 text-zinc-900 dark:bg-zinc-600 dark:text-zinc-200",
-        ACTIVE: "bg-emerald-200 text-emerald-900 dark:bg-emerald-500 dark:text-emerald-900",
-        ON_HOLD: "bg-amber-200 text-amber-900 dark:bg-amber-500 dark:text-amber-900",
-        COMPLETED: "bg-blue-200 text-blue-900 dark:bg-blue-500 dark:text-blue-900",
-        CANCELLED: "bg-red-200 text-red-900 dark:bg-red-500 dark:text-red-900",
+        PLANNING: "border-zinc-300 text-zinc-600 dark:border-zinc-600 dark:text-zinc-300",
+        ACTIVE: "border-teal-300 text-teal-700 dark:border-teal-700 dark:text-teal-300",
+        ON_HOLD: "border-amber-300 text-amber-700 dark:border-amber-700 dark:text-amber-300",
+        COMPLETED: "border-sky-300 text-sky-700 dark:border-sky-700 dark:text-sky-300",
+        CANCELLED: "border-rose-300 text-rose-700 dark:border-rose-700 dark:text-rose-300",
     };
 
     if (!project) {
@@ -54,35 +54,35 @@ export default function ProjectDetail() {
     }
 
     return (
-        <div className="space-y-5 max-w-6xl mx-auto text-zinc-900 dark:text-white">
+        <div className="max-w-7xl mx-auto text-zinc-900 dark:text-white">
             {/* Header */}
-            <div className="flex max-md:flex-col gap-4 flex-wrap items-start justify-between max-w-6xl">
+            <div className="app-panel rounded-2xl p-5 sm:p-6 flex max-md:flex-col gap-5 flex-wrap items-start justify-between">
                 <div className="flex items-center gap-4">
                     <button className="p-1 rounded hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-600 dark:text-zinc-400" onClick={() => navigate('/projects')}>
                         <ArrowLeftIcon className="w-4 h-4" />
                     </button>
                     <div className="flex items-center gap-3">
-                        <h1 className="text-xl font-medium">{project.name}</h1>
-                        <span className={`px-2 py-1 rounded text-xs capitalize ${statusColors[project.status]}`} >
+                        <div><p className="text-xs uppercase tracking-[0.16em] text-zinc-500 dark:text-zinc-400 mb-1">Project workspace</p><h1 className="text-2xl font-bold tracking-tight">{project.name}</h1></div>
+                        <span className={`app-tag capitalize ${statusColors[project.status]}`} >
                             {project.status.replace("_", " ")}
                         </span>
                     </div>
                 </div>
-                <button onClick={() => setShowCreateTask(true)} className="flex items-center gap-2 px-5 py-2 text-sm rounded bg-gradient-to-br from-blue-500 to-blue-600 text-white" >
+                <button onClick={() => setShowCreateTask(true)} className="app-primary flex items-center gap-2 px-4 py-2.5 text-sm font-semibold rounded-lg" >
                     <PlusIcon className="size-4" />
                     New Task
                 </button>
             </div>
 
             {/* Info Cards */}
-            <div className="grid grid-cols-2 sm:flex flex-wrap gap-6">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-px overflow-hidden border-y border-[#e7e4ed] bg-[#e7e4ed] dark:border-zinc-800 dark:bg-zinc-800">
                 {[
                     { label: "Total Tasks", value: tasks.length, color: "text-zinc-900 dark:text-white" },
                     { label: "Completed", value: tasks.filter((t) => t.status === "DONE").length, color: "text-emerald-700 dark:text-emerald-400" },
                     { label: "In Progress", value: tasks.filter((t) => t.status === "IN_PROGRESS" || t.status === "TODO").length, color: "text-amber-700 dark:text-amber-400" },
                     { label: "Team Members", value: project.members?.length || 0, color: "text-blue-700 dark:text-blue-400" },
                 ].map((card, idx) => (
-                    <div key={idx} className=" dark:bg-gradient-to-br dark:from-zinc-800/70 dark:to-zinc-900/50 border border-zinc-200 dark:border-zinc-800 flex justify-between sm:min-w-60 p-4 py-2.5 rounded">
+                    <div key={idx} className="flex justify-between bg-[#f7f7fb] p-4 dark:bg-black">
                         <div>
                             <div className="text-sm text-zinc-600 dark:text-zinc-400">{card.label}</div>
                             <div className={`text-2xl font-bold ${card.color}`}>{card.value}</div>
@@ -93,22 +93,22 @@ export default function ProjectDetail() {
             </div>
 
             {/* Tabs */}
-            <div>
-                <div className="inline-flex flex-wrap max-sm:grid grid-cols-3 gap-2 border border-zinc-200 dark:border-zinc-800 rounded overflow-hidden">
+            <div className="grid lg:grid-cols-[190px_minmax(0,1fr)] gap-6 pt-6">
+                <nav className="flex lg:flex-col gap-1 lg:sticky lg:top-4 lg:self-start">
                     {[
                         { key: "tasks", label: "Tasks", icon: FileStackIcon },
                         { key: "calendar", label: "Calendar", icon: CalendarIcon },
                         { key: "analytics", label: "Analytics", icon: BarChart3Icon },
                         { key: "settings", label: "Settings", icon: SettingsIcon },
                     ].map((tabItem) => (
-                        <button key={tabItem.key} onClick={() => { setActiveTab(tabItem.key); setSearchParams({ id: id, tab: tabItem.key }) }} className={`flex items-center gap-2 px-4 py-2 text-sm transition-all ${activeTab === tabItem.key ? "bg-zinc-100 dark:bg-zinc-800/80" : "hover:bg-zinc-50 dark:hover:bg-zinc-700"}`} >
+                        <button key={tabItem.key} onClick={() => { setActiveTab(tabItem.key); setSearchParams({ id: id, tab: tabItem.key }) }} className={`flex items-center gap-2 px-3.5 py-2.5 rounded-lg text-sm text-left transition-all ${activeTab === tabItem.key ? "bg-violet-100 text-violet-800 dark:bg-violet-500/15 dark:text-violet-200" : "hover:bg-violet-50 dark:hover:bg-[#24212d]"}`} >
                             <tabItem.icon className="size-3.5" />
                             {tabItem.label}
                         </button>
                     ))}
-                </div>
+                </nav>
 
-                <div className="mt-6">
+                <div>
                     {activeTab === "tasks" && (
                         <div className=" dark:bg-zinc-900/40 rounded max-w-6xl">
                             <ProjectTasks tasks={tasks} />
