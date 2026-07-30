@@ -21,7 +21,44 @@ const syncUserCreation = inngest.createFunction(
         }
     );
 
-    
+    //Innngest Function to delete user data from the database
+    const syncUserDeletion = inngest.createFunction(
+        {id: 'delete-user-with-clerk'},
+        {event: 'clerk/user.deleted'},
+        async ({ event }) => {
+            const {data} = event;
+            await prisma.user.delete({
+                where: {
+                    id: data.id,
+                }
+            })
+        }
+    );
+
+    //Innngest Function to update user data in the database
+    const syncUserUpdation = inngest.createFunction(
+        {id: 'update-user-from-clerk'},
+        {event: 'clerk/user.updated'},
+        async ({ event }) => {
+            const {data} = event;
+            await prisma.user.update({
+                where: {
+                    id: data.id,
+                },
+                data: {
+                    email: data?.email_addresses[0]?.email_address,
+                    name: data?.first_name + " " + data?.last_name,
+                    image_url: data?.image_url,
+                }
+            })
+        }
+    );
+
+
 
 // Create an empty array where we'll export future Inngest functions
-export const functions = [];
+export const functions = [
+    syncUserCreation,
+    syncUserDeletion,
+    syncUserUpdation
+];
