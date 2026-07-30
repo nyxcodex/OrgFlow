@@ -4,7 +4,7 @@ import { prisma } from "../src/db.js";
 // Create a client to send and receive events
 export const inngest = new Inngest({ id: "OrgFlow" });
 
-//Inggest Function to save user data to the database
+//Inngest Function to save user data to the database
 const syncUserCreation = inngest.createFunction(
         {id: 'sync-user-from-clerk'},
         {event: 'clerk/user.created'},
