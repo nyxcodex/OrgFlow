@@ -41,7 +41,7 @@ export const getUserWorkSpaces = async (req, res) => {
       },
     });
 
-    res.json(workspaces);
+    res.json({ workspaces });
   } catch (error) {
     console.error(error);
     res.status(500).json({
