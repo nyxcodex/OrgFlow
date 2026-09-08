@@ -1,0 +1,80 @@
+import { prisma } from '../src/db.js';
+
+// Add comment
+export const addComment = async (req, res) => {
+    try {
+        const { taskId, content } = req.body;
+        const { userId } = await req.auth();
+
+        // check if user is a member of the project
+        const task = await prisma.task.findUnique({
+            where: {
+                id: taskId,
+            },
+        });
+
+        if (!task) {
+            return res.status(404).json({ message: 'Task not found' });
+        }
+
+        const project = await prisma.project.findUnique({
+            where: {
+                id: task.projectId,
+            },
+            include: {
+                members: {
+                    include: {
+                        user: true,
+                    },
+                },
+            },
+        });
+
+        if (!project) {
+            return res.status(404).json({ message: 'Project not found' });
+        }
+
+        const member = project.members.find((member) => member.userId === userId);
+        if (!member) {
+            return res.status(403).json({ message: 'You are not a member of this project' });
+        }
+
+        const comment = await prisma.comment.create({
+            data: {
+                taskId,
+                content,
+                userId,
+            },
+            include: {
+                user: true,
+            },
+        });
+
+        res.json({ comment});
+    } catch (error) {
+        console.error('Error adding comment:', error);
+        return res.status(500).json({ message: 'Failed to add comment', error: error.message });
+    }
+};
+
+
+//Get comments for a task
+export const getTaskComments = async (req, res) => {    
+    try {
+        const { taskId } = req.params;
+
+        const comments = await prisma.comment.findMany({
+            where: {
+                taskId,
+            },
+            include: {
+                user: true,
+            },
+        });
+
+        res.json({ comments });
+    } catch (error) {
+        console.error('Error fetching task comments:', error);
+        return res.status(500).json({ message: 'Failed to fetch task comments', error: error.message });
+    }
+};
