@@ -67,7 +67,7 @@ const Dashboard = () => {
             <ProjectOverview />
           </div>
 
-          {/* RECENT ACTIVITY */}
+          {/*RECENT ACTIVITY*/}
           <div className="app-panel rounded-2xl p-5">
             <RecentActivity />
           </div>
