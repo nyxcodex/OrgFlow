@@ -1,7 +1,6 @@
 import { Inngest } from "inngest";
 import { prisma } from "../src/db.js";
 import { sendEmail } from "../configs/nodemailer.js";
-import { step } from "inngest/step";
 
 export const inngest = new Inngest({ id: "OrgFlow" });
 
@@ -158,7 +157,7 @@ const sendTaskAssignmentEmail = inngest.createFunction(
     id: "send-task-assignment-mail",
     triggers: [{ event: "app/task.assigned" }],
   },
-  async ({ event }) => {
+  async ({ event, step }) => {
     const { taskId } = event.data;
 
     const task = await prisma.task.findUnique({

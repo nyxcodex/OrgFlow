@@ -1,7 +1,5 @@
 import nodemailer from "nodemailer";
 
-const nodemailer = require("nodemailer");
-
 const transporter = nodemailer.createTransport({
   host: "smtp-relay.brevo.com",
   port: 587,
@@ -11,14 +9,15 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-const sendEmail = async ({to, subject, body}) => {
-    const response = await transporter.sendMail({
-      from: process.env.SENDER_EMAIL, // sender address
-      to, // list of recipients
-      subject,
-      html: body, // HTML body
-    });
-    return response;
-}
+export const sendEmail = async ({ to, subject, body }) => {
+  const response = await transporter.sendMail({
+    from: process.env.SENDER_EMAIL,
+    to,
+    subject,
+    html: body,
+  });
+
+  return response;
+};
 
 export default sendEmail;
