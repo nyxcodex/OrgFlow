@@ -1,4 +1,5 @@
 import { prisma } from "../src/db.js";
+import {inggest} from "../inngest/index.js";
 
 //create task
 export const createTask = async (req, res) => {
@@ -55,6 +56,14 @@ export const createTask = async (req, res) => {
             assignee: true
         }
     });
+
+    await inngest.send({
+        name: "app/task.assigned",
+        data: {
+            taskId: task.id, origin
+        },
+    });
+
     res.json({task: taskWithAssignee, message: "Task created successfully"});
     }
     catch (error) {
