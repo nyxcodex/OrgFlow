@@ -4,7 +4,7 @@ import {
   ListChecks,
   AlertTriangle,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { createElement, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 export default function StatsGrid() {
@@ -85,7 +85,7 @@ export default function StatsGrid() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 my-8">
       {statCards.map(
-        ({ icon: Icon, title, value, subtitle, bgColor, textColor }, i) => (
+        ({ icon, title, value, subtitle, bgColor, textColor }, i) => (
           <div
             key={i}
             className="app-panel hover:border-violet-200 dark:hover:border-violet-500/30 transition duration-200 rounded-xl"
@@ -106,7 +106,7 @@ export default function StatsGrid() {
                   )}
                 </div>
                 <div className={`p-3 rounded-xl ${bgColor} bg-opacity-20`}>
-                  <Icon size={20} className={textColor} />
+                  {createElement(icon, { size: 20, className: textColor })}
                 </div>
               </div>
             </div>

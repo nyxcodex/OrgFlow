@@ -213,26 +213,30 @@ const sendTaskAssignmentEmail = inngest.createFunction(
       </div>
     `;
 
-    await sendEmail({
-      to: task.assignee.email,
-      subject: `New Task Assignment: ${task.title}`,
-      body: emailBody,
-    });
+    await step.run("send-task-assignment-email", () =>
+      sendEmail({
+        to: task.assignee.email,
+        subject: `New Task Assignment: ${task.title}`,
+        body: emailBody,
+      }),
+    );
 
-    if(new Date(task.due_date).toLocaleDateString() === new Date().toLocaleDateString()) {
-      await step.sleepUntil('wait-for-the-due-date', new Date(task.due_date));
-      await step.run('check-if-task-is-completed', async () => {
-        const task = await prisma.task.findUnique({
-          where: { id: taskId },
-          include: {
-            assignee: true,
-            project: true,
-          },
-        });
-      });
+    const dueDate = new Date(task.due_date);
+    if (dueDate > new Date()) {
+      await step.sleepUntil("wait-for-the-due-date", dueDate);
     }
 
-    if (task.status !== "DONE") {
+    const taskAtDueDate = await step.run("get-task-at-due-date", () =>
+      prisma.task.findUnique({
+        where: { id: taskId },
+        include: {
+          assignee: true,
+          project: true,
+        },
+      }),
+    );
+
+    if (taskAtDueDate && taskAtDueDate.status !== "DONE") {
       await step.run("send-task-reminder-mail", async () => {
         const reminderEmailBody = `
           <div style="font-family: Arial, Helvetica, sans-serif; background-color: #f4f7fb; padding: 32px 0;">
@@ -242,15 +246,15 @@ const sendTaskAssignmentEmail = inngest.createFunction(
               </div>
 
               <div style="padding: 32px; color: #1f2937; line-height: 1.7;">
-                <p style="margin: 0 0 16px; font-size: 16px;">Hi ${task.assignee.name},</p>
+                <p style="margin: 0 0 16px; font-size: 16px;">Hi ${taskAtDueDate.assignee.name},</p>
 
                 <p style="margin: 0 0 16px; font-size: 16px;">
-                  This is a friendly reminder that your task <strong>${task.title}</strong> in <strong>${task.project.name}</strong> is due today.
+                  This is a friendly reminder that your task <strong>${taskAtDueDate.title}</strong> in <strong>${taskAtDueDate.project.name}</strong> is due today.
                 </p>
 
                 <div style="background-color: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 18px 20px; margin: 24px 0;">
-                  <p style="margin: 0 0 8px; font-size: 15px;"><strong>Task:</strong> ${task.title}</p>
-                  <p style="margin: 0 0 8px; font-size: 15px;"><strong>Project:</strong> ${task.project.name}</p>
+                  <p style="margin: 0 0 8px; font-size: 15px;"><strong>Task:</strong> ${taskAtDueDate.title}</p>
+                  <p style="margin: 0 0 8px; font-size: 15px;"><strong>Project:</strong> ${taskAtDueDate.project.name}</p>
                   <p style="margin: 0; font-size: 15px;"><strong>Due Date:</strong> ${formattedDueDate}</p>
                 </div>
 
@@ -268,8 +272,8 @@ const sendTaskAssignmentEmail = inngest.createFunction(
         `;
 
         await sendEmail({
-          to: task.assignee.email,
-          subject: `Reminder: Task "${task.title}" is due today`,
+          to: taskAtDueDate.assignee.email,
+          subject: `Reminder: Task "${taskAtDueDate.title}" is due today`,
           body: reminderEmailBody,
         });
       });

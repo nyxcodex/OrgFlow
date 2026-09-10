@@ -3,15 +3,18 @@ import { NavLink } from "react-router-dom";
 import MyTasksSidebar from "./MyTasksSidebar";
 import ProjectSidebar from "./ProjectsSidebar";
 import WorkspaceDropdown from "./WorkspaceDropdown";
-
 import {
   LayoutDashboard,
-  FolderKanban, // ✅ better for projects
+  FolderKanban, 
   Users,
   Settings,
 } from "lucide-react";
+import { useClerk } from "@clerk/react";
 
 const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
+
+  const {openUserProfile} = useClerk()
+
   const menuItems = [
     { name: "Dashboard", href: "/", icon: LayoutDashboard },
     { name: "Projects", href: "/projects", icon: FolderKanban },
@@ -62,7 +65,7 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
               </NavLink>
             ))}
 
-            <button className="flex w-full items-center gap-3 py-2.5 px-4 text-gray-800 dark:text-zinc-100 cursor-pointer rounded-lg hover:bg-violet-50 dark:hover:bg-[#24212d] transition-all">
+            <button onClick={openUserProfile} className="flex w-full items-center gap-3 py-2.5 px-4 text-gray-800 dark:text-zinc-100 cursor-pointer rounded-lg hover:bg-violet-50 dark:hover:bg-[#24212d] transition-all">
               <Settings size={16} />
               <p className="text-sm truncate">Settings</p>
             </button>

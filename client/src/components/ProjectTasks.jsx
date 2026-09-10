@@ -5,6 +5,8 @@ import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { deleteTask, updateTask } from "../features/workspaceSlice";
 import { Bug, CalendarIcon, GitCommit, MessageSquare, Square, Trash, XIcon, Zap } from "lucide-react";
+import { useAuth } from "@clerk/react";
+import api from "../configs/api";
 
 const typeIcons = {
     BUG: { icon: Bug, color: "text-rose-600 dark:text-rose-300" },
@@ -26,7 +28,34 @@ const statusStyles = {
     DONE: "border-l-teal-500 bg-teal-50 text-teal-800 dark:border-l-teal-400 dark:bg-teal-500/10 dark:text-teal-200",
 };
 
+const Assignee = ({ assignee }) => {
+    const name = assignee?.name || assignee?.email || "Unassigned";
+    const initials = name
+        .split(" ")
+        .map((part) => part[0])
+        .join("")
+        .slice(0, 2)
+        .toUpperCase();
+
+    return (
+        <div className="flex items-center gap-2 min-w-0">
+            {assignee?.image ? (
+                <img src={assignee.image} className="size-5 rounded-full" alt={name} />
+            ) : (
+                <span className="size-5 rounded-full bg-zinc-200 dark:bg-zinc-700 text-[9px] font-semibold flex items-center justify-center">
+                    {initials}
+                </span>
+            )}
+            <div className="min-w-0">
+                <p className="truncate">{assignee?.name || "Unassigned"}</p>
+                {assignee?.email && <p className="truncate text-xs text-zinc-500 dark:text-zinc-400">{assignee.email}</p>}
+            </div>
+        </div>
+    );
+};
+
 const ProjectTasks = ({ tasks }) => {
+    const {getToken} = useAuth()
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [selectedTasks, setSelectedTasks] = useState([]);
@@ -63,9 +92,9 @@ const ProjectTasks = ({ tasks }) => {
     const handleStatusChange = async (taskId, newStatus) => {
         try {
             toast.loading("Updating status...");
+            const token = await getToken()
 
-            //  Simulate API call
-            await new Promise((resolve) => setTimeout(resolve, 2000));
+            await api.put(`/api/tasks/${taskId}`, {status: newStatus}, {headers: {Authorization: `Bearer ${token}`}})
 
             let updatedTask = structuredClone(tasks.find((t) => t.id === taskId));
             updatedTask.status = newStatus;
@@ -83,13 +112,17 @@ const ProjectTasks = ({ tasks }) => {
         try {
             const confirm = window.confirm("Are you sure you want to delete the selected tasks?");
             if (!confirm) return;
+            const token = await getToken()
 
             toast.loading("Deleting tasks...");
 
-            //  Simulate API call
-            await new Promise((resolve) => setTimeout(resolve, 2000));
+            await api.delete("/api/tasks", {
+                data: { tasksIds: selectedTasks },
+                headers: { Authorization: `Bearer ${token}` },
+            });
 
             dispatch(deleteTask(selectedTasks));
+            setSelectedTasks([]);
 
             toast.dismissAll();
             toast.success("Tasks deleted successfully");
@@ -203,10 +236,7 @@ const ProjectTasks = ({ tasks }) => {
                                                     </select>
                                                 </td>
                                                 <td className="px-4 py-2">
-                                                    <div className="flex items-center gap-2">
-                                                        <img src={task.assignee?.image} className="size-5 rounded-full" alt="avatar" />
-                                                        {task.assignee?.name || "-"}
-                                                    </div>
+                                                    <Assignee assignee={task.assignee} />
                                                 </td>
                                                 <td className="px-4 py-2">
                                                     <div className="flex items-center gap-1 text-zinc-600 dark:text-zinc-400">
@@ -263,8 +293,7 @@ const ProjectTasks = ({ tasks }) => {
                                         </div>
 
                                         <div className="flex items-center gap-2 text-sm text-zinc-700 dark:text-zinc-300">
-                                            <img src={task.assignee?.image} className="size-5 rounded-full" alt="avatar" />
-                                            {task.assignee?.name || "-"}
+                                            <Assignee assignee={task.assignee} />
                                         </div>
 
                                         <div className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">

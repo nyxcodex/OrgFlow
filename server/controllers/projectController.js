@@ -12,7 +12,11 @@ export const createProject = async (req, res) => {
                 id: workspaceId
             },
             include: {
-                user: true
+                members: {
+                    include: {
+                        user: true
+                    }
+                }
             }
         });
 
@@ -20,7 +24,7 @@ export const createProject = async (req, res) => {
             return res.status(404).json({ message: "Workspace not found" });
         }
 
-        if(!workspace.user.some((member) => member.userId === userId && member.role === "ADMIN")) {
+        if(!workspace.members.some((member) => member.userId === userId && member.role === "ADMIN")) {
             return res.status(403).json({ message: "Access denied" });
         }
 
@@ -173,7 +177,7 @@ export const addMember = async (req, res) => {
         }
 
         //check if user is already a member of the project
-        const existingMember = project.members.find((member) => member.email === email);
+        const existingMember = project.members.find((member) => member.user.email === email);
         if(existingMember) {
             return res.status(400).json({ message: "User is already a member of the project" });
         }

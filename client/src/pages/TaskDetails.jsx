@@ -4,7 +4,8 @@ import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { CalendarIcon, MessageCircle, PenIcon } from "lucide-react";
-import { assets } from "../assets/assets";
+import { useAuth, useUser } from "@clerk/react";
+import api from "../configs/api";
 
 const TaskDetails = () => {
 
@@ -12,7 +13,9 @@ const TaskDetails = () => {
     const projectId = searchParams.get("projectId");
     const taskId = searchParams.get("taskId");
 
-    const user = { id : 'user_1'}
+    const {user} = useUser()
+    const {getToken} = useAuth()
+
     const [task, setTask] = useState(null);
     const [project, setProject] = useState(null);
     const [comments, setComments] = useState([]);
@@ -22,7 +25,16 @@ const TaskDetails = () => {
     const { currentWorkspace } = useSelector((state) => state.workspace);
 
     const fetchComments = async () => {
-
+        if(!taskId) return
+        try {
+            const token = await getToken()
+            const {data} = await api.get(`/api/comments/${taskId}`, {headers: {
+                Authorization: `Bearer ${token}`
+            }})
+            setComments(data.comments || [])
+        } catch (error) {
+            toast.error(error?.response?.data?.message || error.message)
+        }
     };
 
     const fetchTaskDetails = async () => {
@@ -47,12 +59,11 @@ const TaskDetails = () => {
 
             toast.loading("Adding comment...");
 
-            //  Simulate API call
-            await new Promise((resolve) => setTimeout(resolve, 2000));
-
-            const dummyComment = { id: Date.now(), user: { id: 1, name: "User", image: assets.profile_img_a }, content: newComment, createdAt: new Date() };
+            const token = await getToken();
+            const {data} = await api.post(`/api/comments`, {taskId: task.id, content: newComment}, {headers: {
+                Authorization: `Bearer ${token}`}})
             
-            setComments((prev) => [...prev, dummyComment]);
+            setComments((prev) => [...prev, data.comment]);
             setNewComment("");
             toast.dismissAll();
             toast.success("Comment added.");
@@ -149,8 +160,17 @@ const TaskDetails = () => {
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-gray-700 dark:text-zinc-300">
                         <div className="flex items-center gap-2">
-                            <img src={task.assignee?.image} className="size-5 rounded-full" alt="avatar" />
-                            {task.assignee?.name || "Unassigned"}
+                            {task.assignee?.image ? (
+                                <img src={task.assignee.image} className="size-5 rounded-full" alt={task.assignee.name || "assignee"} />
+                            ) : (
+                                <span className="size-5 rounded-full bg-zinc-200 dark:bg-zinc-700 text-[9px] font-semibold flex items-center justify-center">
+                                    {(task.assignee?.name || task.assignee?.email || "U").slice(0, 1).toUpperCase()}
+                                </span>
+                            )}
+                            <span>
+                                <span className="block">{task.assignee?.name || "Unassigned"}</span>
+                                {task.assignee?.email && <span className="block text-xs text-gray-500 dark:text-zinc-400">{task.assignee.email}</span>}
+                            </span>
                         </div>
                         <div className="flex items-center gap-2">
                             <CalendarIcon className="size-4 text-gray-500 dark:text-zinc-500" />

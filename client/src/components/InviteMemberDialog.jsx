@@ -1,8 +1,12 @@
 import { useState } from "react";
 import { Mail, UserPlus } from "lucide-react";
 import { useSelector } from "react-redux";
+import toast from "react-hot-toast";
+import { useOrganization } from "@clerk/react";
 
 const InviteMemberDialog = ({ isDialogOpen, setIsDialogOpen }) => {
+
+    const {organization} = useOrganization()
 
     const currentWorkspace = useSelector((state) => state.workspace?.currentWorkspace || null);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -14,6 +18,22 @@ const InviteMemberDialog = ({ isDialogOpen, setIsDialogOpen }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        if (!organization) {
+            toast.error("Select an organization before inviting a member.");
+            return;
+        }
+
+        setIsSubmitting(true)
+        try {
+            await organization.inviteMember({emailAddress: formData.email, role: formData.role})
+            toast.success("Invitation sent successfully")
+            setIsDialogOpen(false)
+        } catch (error) {
+            console.log(error)
+            toast.error(error.response?.data?.message || error.message)
+        }finally {
+            setIsSubmitting(false)
+        }
     };
 
     if (!isDialogOpen) return null;

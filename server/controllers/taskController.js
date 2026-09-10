@@ -57,12 +57,16 @@ export const createTask = async (req, res) => {
         }
     });
 
-    await inngest.send({
+    try {
+      await inngest.send({
         name: "app/task.assigned",
         data: {
-            taskId: task.id, origin
+          taskId: task.id,
         },
-    });
+      });
+    } catch (error) {
+      console.error("Failed to send task assignment event:", error);
+    }
 
     res.json({task: taskWithAssignee, message: "Task created successfully"});
     }
@@ -112,7 +116,10 @@ export const updateTask = async (req, res) => {
         where: {
             id: req.params.id
         },
-        data: req.body
+        data: req.body,
+        include: {
+          assignee: true,
+        },
     });
 
     res.json({ task: updatedTask, message: "Task updated successfully" });

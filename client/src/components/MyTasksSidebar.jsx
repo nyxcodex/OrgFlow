@@ -2,10 +2,11 @@ import { useEffect, useState } from 'react';
 import { CheckSquareIcon, ChevronDownIcon, ChevronRightIcon } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { useUser } from '@clerk/react';
 
 function MyTasksSidebar() {
 
-    const user = { id: 'user_1' }
+    const {user} = useUser()
 
     const { currentWorkspace } = useSelector((state) => state.workspace);
     const [showMyTasks, setShowMyTasks] = useState(false);
@@ -24,19 +25,21 @@ function MyTasksSidebar() {
         }
     };
 
-    const fetchUserTasks = () => {
+    useEffect(() => {
         const userId = user?.id || '';
-        if (!userId || !currentWorkspace) return;
-        const currentWorkspaceTasks = currentWorkspace.projects.flatMap((project) => {
-            return project.tasks.filter((task) => task?.assignee?.id === userId);
+        if (!userId || !currentWorkspace) {
+            setMyTasks([]);
+            return;
+        }
+
+        const currentWorkspaceTasks = (currentWorkspace.projects || []).flatMap((project) => {
+            return (project.tasks || []).filter((task) =>
+                task?.assigneeId === userId || task?.assignee?.id === userId,
+            );
         });
 
         setMyTasks(currentWorkspaceTasks);
-    }
-
-    useEffect(() => {
-        fetchUserTasks()
-    }, [currentWorkspace])
+    }, [currentWorkspace, user?.id])
 
     return (
         <div className="mt-5 px-3">

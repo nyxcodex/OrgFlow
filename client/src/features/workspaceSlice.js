@@ -1,5 +1,4 @@
 import { createSlice, createAsyncThunk} from "@reduxjs/toolkit";
-import { dummyWorkspaces } from "../assets/assets";
 import api from "../configs/api";
 
 export const fetchWorkspaces = createAsyncThunk('workspace/fetchWorkspaces', async ({getToken}) => {
@@ -66,7 +65,7 @@ const workspaceSlice = createSlice({
             state.currentWorkspace.projects = state.currentWorkspace.projects.map((p) => {
                 console.log(p.id, action.payload.projectId, p.id === action.payload.projectId);
                 if (p.id === action.payload.projectId) {
-                    p.tasks.push(action.payload);
+                    p.tasks = [...(p.tasks || []), action.payload];
                 }
                 return p;
             });
@@ -75,7 +74,7 @@ const workspaceSlice = createSlice({
             state.workspaces = state.workspaces.map((w) =>
                 w.id === state.currentWorkspace.id ? {
                     ...w, projects: w.projects.map((p) =>
-                        p.id === action.payload.projectId ? { ...p, tasks: p.tasks.concat(action.payload) } : p
+                        p.id === action.payload.projectId ? { ...p, tasks: [...(p.tasks || []), action.payload] } : p
                     )
                 } : w
             );
@@ -103,17 +102,17 @@ const workspaceSlice = createSlice({
         },
         deleteTask: (state, action) => {
             state.currentWorkspace.projects.map((p) => {
-                p.tasks = p.tasks.filter((t) => !action.payload.includes(t.id));
+                p.tasks = (p.tasks || []).filter((t) => !action.payload.includes(t.id));
                 return p;
             });
-            // find workspace and project by id and delete task from it
+
             state.workspaces = state.workspaces.map((w) =>
                 w.id === state.currentWorkspace.id ? {
-                    ...w, projects: w.projects.map((p) =>
-                        p.id === action.payload.projectId ? {
-                            ...p, tasks: p.tasks.filter((t) => !action.payload.includes(t.id))
-                        } : p
-                    )
+                    ...w,
+                    projects: w.projects.map((p) => ({
+                        ...p,
+                        tasks: (p.tasks || []).filter((t) => !action.payload.includes(t.id)),
+                    }))
                 } : w
             );
         }

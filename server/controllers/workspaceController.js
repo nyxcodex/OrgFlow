@@ -23,6 +23,7 @@ export const getUserWorkSpaces = async (req, res) => {
           include: {
             tasks: {
               include: {
+                assignee: true,
                 comments: {
                   include: {
                     user: true,
