@@ -60,23 +60,29 @@ screenshots/
 ├── project-details.png
 ├── tasks.png
 ├── task-details.png
-└── team.png
+├── team.png
+├── workspace-invitation-email.png
+├── task-assignment-email.png
+└── task-due-reminder-email.png
 ```
 
-The screenshots are displayed in a compact 2-column by 3-row grid:
+The screenshots are displayed in a compact 3-column by 3-row grid:
 
 <table>
 	<tr>
-		<td width="50%"><img src="./screenshots/dashboard.png" alt="Dashboard"><br><strong>Dashboard</strong></td>
-		<td width="50%"><img src="./screenshots/projects.png" alt="Projects"><br><strong>Projects</strong></td>
+		<td width="33%"><img src="./screenshots/dashboard.png" alt="Dashboard"><br><strong>Dashboard</strong></td>
+		<td width="33%"><img src="./screenshots/projects.png" alt="Projects"><br><strong>Projects</strong></td>
+		<td width="33%"><img src="./screenshots/project-details.png" alt="Project Details"><br><strong>Project Details</strong></td>
 	</tr>
 	<tr>
-		<td width="50%"><img src="./screenshots/project-details.png" alt="Project Details"><br><strong>Project Details</strong></td>
-		<td width="50%"><img src="./screenshots/tasks.png" alt="Tasks"><br><strong>Tasks</strong></td>
+		<td width="33%"><img src="./screenshots/tasks.png" alt="Tasks"><br><strong>Tasks</strong></td>
+		<td width="33%"><img src="./screenshots/task-details.png" alt="Task Details"><br><strong>Task Details</strong></td>
+		<td width="33%"><img src="./screenshots/team.png" alt="Team"><br><strong>Team</strong></td>
 	</tr>
 	<tr>
-		<td width="50%"><img src="./screenshots/task-details.png" alt="Task Details"><br><strong>Task Details</strong></td>
-		<td width="50%"><img src="./screenshots/team.png" alt="Team"><br><strong>Team</strong></td>
+		<td width="33%"><img src="./screenshots/workspace-invitation-email.png" alt="Workspace Invitation Email"><br><strong>Workspace Invitation Email</strong></td>
+		<td width="33%"><img src="./screenshots/task-assignment-email.png" alt="Task Assignment Email"><br><strong>Task Assignment Email</strong></td>
+		<td width="33%"><img src="./screenshots/task-due-reminder-email.png" alt="Task Due Reminder Email"><br><strong>Task Due Reminder Email</strong></td>
 	</tr>
 </table>
 
